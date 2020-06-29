@@ -4,7 +4,6 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
-
 const { check, validationResult } = require('express-validator');
 
 // this grabs the user model
@@ -70,11 +69,15 @@ router.post(
         }
       };
 
-      const secret = config.get('jwtSecret');
-      jwt.sign(payload, secret, { expiresIn: 360000 }, function (err, token) {
-        if (err) throw err;
-        res.json({ token });
-      });
+      jwt.sign(
+        payload,
+        config.get('jwtSecret'),
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
       res.send('User registered', { token });
     } catch (err) {
       console.log(err.message);
